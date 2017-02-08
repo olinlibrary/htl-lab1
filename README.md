@@ -1,13 +1,16 @@
 # HtL Lab 1
 
 This is a [Flask](http://flask.pocoo.org) server that implements a minimal web-based interface to the Olin College
-2016-2017 course catalog. The course data is scraped from the <olin.edu> web site.
+2016-2017 course catalog.
 
 
 ## Requirements
 
 Python 3 is required to run this program.
-You can test whether Python 3 is installed on your laptop by running `python3` in the bash (shell) command line.
+You can test whether Python 3 is installed on your laptop by running `python3 --version` in the bash (shell) command line:
+
+    $ python --version
+    Python 2.7.6
 
 
 ## Setup
@@ -21,7 +24,7 @@ $ pip3 install pandas
 ## Usage
 
 1. Run `$ python3 server.py`
-2. Browse to <http://127.0.0.1:5000/>. (Running `server.py` also prints this URL.)
+2. Browse to <http://127.0.0.1:5000/>. (The `python3 server.py` command also prints this URL.)
 
 
 ## Alternative setup and Usage
@@ -58,9 +61,9 @@ These are Jinja templates; read [here](http://jinja.pocoo.org) for information a
 `data/olin-courses-16-17.csv` is [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file that lists the courses.
 See the first line of the file itself for a description of its columns.
 
-`scripts/scrape_course_catalog.py` scrapes the <olin.edu> web site to create the data file.
+`scripts/scrape_course_catalog.py` scrapes the <http://www.olin.edu> web site to create the data file.
 This script makes heavy use of [pandas](http://pandas.pydata.org).
-You shouldn't need to run this – in fact, running it too often may look like an attack on the web site.
+Ask IT first before you run this script – it could look look like an attack on the web site.
 As with all web scraping, this script is fragile – a minor change to the olin.edu web design or URL format
 could break it with no warning.
 
@@ -72,4 +75,4 @@ Written by Oliver Steele <oliver.steele@olin.edu>.
 
 ## License
 
-This code is made available under the MIT License
+This code is made available under the MIT License.
