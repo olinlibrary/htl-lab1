@@ -1,21 +1,28 @@
+"""
+This is a run-once script that scrapes the <http://www.olin.edu> web site to create a data file of course information.
+
+Ask IT before you run this script – it could look look like an attack on the web site.
+
+As with all web scraping, this script is fragile – a minor change to the olin.edu web design or URL format
+could break it with no warning.
+"""
+
 import re
 import urllib
 
 import pandas as pd
 import requests
-import yaml
 from bs4 import BeautifulSoup
 
-#%%
-
-## Configuration
+# Configuration
+#
 
 # start here:
-start_url = 'http://www.olin.edu/course-listing/'
+START_URL = 'http://www.olin.edu/course-listing/'
 
 # actually start on all these pages:
 # TODO a more robust implementation would look for the ?page links on the original start page
-start_urls = [start_url] + [start_url + '?page=%d' % i for i in range(1, 8)]
+start_urls = [START_URL] + [START_URL + '?page=%d' % i for i in range(1, 8)]
 
 # download and parse all the pages
 pages = [BeautifulSoup(requests.get(u).text, 'lxml') for u in start_urls]
@@ -26,12 +33,12 @@ hrefs = {a.attrs['href'] for page in pages for a in page.find_all('a')}
 # select only those href targets whose URLs look like course pages:
 # /course-listing/, followed by three or four letters, and optional hypen, three or four digits,
 # an optional letter, a hypen, and after that we don't care.
-course_urls = {urllib.parse.urljoin(start_url, href) for href in hrefs if re.match(r'\/course-listing\/[a-z]{3,4}-?\d{3,4}[a-z]?-', href)}
+course_urls = {urllib.parse.urljoin(START_URL, href) for href in hrefs if re.match(r'\/course-listing\/[a-z]{3,4}-?\d{3,4}[a-z]?-', href)}
 
 # download and parse all the course pages
 course_pages = {u: BeautifulSoup(requests.get(u).text, 'lxml') for u in course_urls}
 
-#%%
+
 def parse_page(course_url, html):
     field_names = ['course-title', 'course-credits', 'course-hours', 'recommended-requisites', 'course-contact', 'course-description']
     field_elements = {field_name: html.select('.' + field_name) for field_name in field_names}
@@ -59,8 +66,5 @@ df['course_area'] = df.course_number.str.extract(r'^([A-Z]+)', expand=False)
 df.set_index('course_number', inplace=True)
 df.sort_index(inplace=True)
 
-df.head()
-
-#%%
 with open('./data/olin-courses-16-17.csv', 'w') as f:
     df.to_csv(f)
